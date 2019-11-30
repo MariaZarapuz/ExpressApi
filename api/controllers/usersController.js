@@ -10,7 +10,7 @@ db.connect('mongodb://localhost:27017', function (err) {
 module.exports.users_list = function (req, res) {
     db.get().db('apidb').collection('users').find().toArray(function (err, result) {
         if (err) {
-            throw ('Fallo en la conexión con la BD');
+            throw (' Fallo en la conexión con la BD');
 
         } else {
             res.send(result);
