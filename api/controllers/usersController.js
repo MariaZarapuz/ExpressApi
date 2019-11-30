@@ -10,7 +10,7 @@ db.connect('mongodb://localhost:27017', function (err) {
 module.exports.users_list = function (req, res) {
     db.get().db('apidb').collection('users').find().toArray(function (err, result) {
         if (err) {
-            throw (' Fallo en la conexión con la BD');
+            throw ('Fallo en la conexión con la BD');
 
         } else {
             res.send(result);
@@ -43,7 +43,6 @@ module.exports.users_update_one = function (req, res, next) {
         return;
     }
     const id = req.params.id;
-    var ObjectId = require('mongodb');
     const update = {
         $set: {
             nombre: req.body.nombre,
@@ -58,7 +57,7 @@ module.exports.users_update_one = function (req, res, next) {
     };
 
     db.get().db('apidb').collection('users').updateOne({
-        _id: ObjectId(id)
+        _id: new mongo.ObjectId(id)
     }, update, function (err, result) {
         if (err) {
             next(new Error('Fallo en la conexión con la BD'));
@@ -78,11 +77,9 @@ module.exports.users_delete_one = function (req, res, next) {
     }
 
     const id = req.params.id;
-    var ObjectId = require('mongodb');
-
 
     db.get().db('apidb').collection('users').deleteOne({
-        _id: ObjectId(id)
+        _id: new mongo.ObjectId(id)
     }, function (err, result) {
         console.log(id, "filter")
         if (err) {
