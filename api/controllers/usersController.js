@@ -43,6 +43,7 @@ module.exports.users_update_one = function (req, res, next) {
         return;
     }
     const id = req.params.id;
+    var ObjectId = require('mongodb');
     const update = {
         $set: {
             nombre: req.body.nombre,
@@ -57,7 +58,7 @@ module.exports.users_update_one = function (req, res, next) {
     };
 
     db.get().db('apidb').collection('users').updateOne({
-        _id: new mongo.ObjectId(id)
+        _id: ObjectId(id)
     }, update, function (err, result) {
         if (err) {
             next(new Error('Fallo en la conexión con la BD'));
@@ -77,9 +78,11 @@ module.exports.users_delete_one = function (req, res, next) {
     }
 
     const id = req.params.id;
+    var ObjectId = require('mongodb');
+
 
     db.get().db('apidb').collection('users').deleteOne({
-        _id: new mongo.ObjectId(id)
+        _id: ObjectId(id)
     }, function (err, result) {
         console.log(id, "filter")
         if (err) {
