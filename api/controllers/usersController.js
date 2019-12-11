@@ -26,7 +26,7 @@ module.exports.users_getById = function (req, res, next) {
         next(new Error('La conexión no está establecida'));
         return;
     }
-    console.log('req: ', req.params.id);
+
     const id = req.params.id;
 
     db.get().db('apidb').collection('users').find({
@@ -36,7 +36,7 @@ module.exports.users_getById = function (req, res, next) {
             next(new Error('Fallo en el listado de estudiantes'));
             return;
         } else {
-            // Si todo fue bien, devolver el resultado al cliente
+
             res.send(result);
         }
     });
@@ -112,7 +112,7 @@ module.exports.users_update_one =
     };
 
 module.exports.users_delete_one = function (req, res, next) {
-    console.log(req.params)
+
     if (db.get() === null) {
         next(new Error('La conexión no está establecida'));
         return;
@@ -123,7 +123,7 @@ module.exports.users_delete_one = function (req, res, next) {
     db.get().db('apidb').collection('users').deleteOne({
         _id: ObjectId(id)
     }, function (err, result) {
-        console.log(id, "filter")
+
         if (err) {
             next(new Error('Fallo en la conexión con la BD'));
             return
