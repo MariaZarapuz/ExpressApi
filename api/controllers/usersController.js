@@ -1,4 +1,5 @@
 var db = require('../db');
+require('express-validator')
 
 db.connect('mongodb://localhost:27017', function (err) {
     if (err) {
@@ -7,10 +8,10 @@ db.connect('mongodb://localhost:27017', function (err) {
 });
 
 
-module.exports.users_list = function (req, res) {
+module.exports.users_list = function (req, res,next) {
     db.get().db('apidb').collection('users').find().toArray(function (err, result) {
         if (err) {
-            throw ('Fallo en la conexión con la BD');
+            next(new Error('Fallo en la conexión con la BD')) ;
 
         } else {
             res.send(result);
@@ -18,7 +19,15 @@ module.exports.users_list = function (req, res) {
     });
 }
 
-module.exports.users_create = function (req, res) {
+module.exports.users_create = function (req, res,next) {
+    const errors = validationResult(req);
+ if (!errors.isEmpty()) {
+ return res.status(422).json({ errors: errors.array() });
+ }
+ if (db.get() === null) {
+    next(new Error('La conexión no está establecida'));
+    return;
+    }
     const user = {};
     user.nombre = req.body.nombre;
     user.apellidos = req.body.apellidos;
@@ -31,13 +40,19 @@ module.exports.users_create = function (req, res) {
 
     db.get().db('apidb').collection('users').insertOne(user, function (err, result) {
         if (err) {
-            throw ('Fallo en la conexión con la BD');
+            next(new Error('Fallo en la conexión con la BD')) ;
         } else {
             res.send(result)
         }
     });
 }
-module.exports.users_update_one = function (req, res, next) {
+module.exports.users_update_one = 
+function (req, res, next)  {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+    }
+    
     if (db.get() === null) {
         next(new Error('La conexión no está establecida'));
         return;
