@@ -12,7 +12,10 @@ const valid_user = [
     })
     .isAlpha(['es-ES']),
 
-    check('apellidos').custom((value, {
+    check('apellidos').isLength({
+        min: 3
+    })
+    .custom((value, {
         req
     }) => {
         if (isNaN(value)) {
@@ -21,19 +24,20 @@ const valid_user = [
             throw new Error('Apellidos no válidos. Deben contener al menos 3 caracteres.')
         }
     }),
-    check('edad')
+    check('edad', 'Edad no válida. Debe estar comprendida entre 0 y 125.')
     .isInt({
         min: 0,
         max: 125
-    })
-    .isAlpha(['es-ES']),
-    check('dni')
-    .isAlphanumeric(['es-ES'])
-    .isLength({
-        max: 9
     }),
-    check('cumple')
-    .isISO8601,
+
+    check('dni', 'D.N.I no válido. Debe contener un total de 9 caracteres.').isLength({
+        min: 9,
+        max: 9
+    }).isAlphanumeric(),
+
+    check('cumple', 'Fecha de nacimiento no válida. Debe ser en formato yyyy-mm-dd.')
+    .isISO8601(),
+
     check('colorFavorito', 'Color Favorito no válido. Debe contener al menos 3 caracteres.')
     .isLength({
         min: 3
@@ -45,9 +49,9 @@ const valid_user = [
 
 router.get('/', users_controller.users_list);
 router.get('/:id', users_controller.users_getById);
-router.post('/', users_controller.users_create);
+router.post('/', valid_user, users_controller.users_create);
 
-router.put('/:id', users_controller.users_update_one);
+router.put('/:id', valid_user, users_controller.users_update_one);
 router.delete('/:id', users_controller.users_delete_one);
 
 
