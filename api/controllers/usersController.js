@@ -20,7 +20,7 @@ module.exports.users_list = function (req, res, next) {
             res.send(result);
         }
     });
-}
+};
 module.exports.users_getById = function (req, res, next) {
     if (db.get() === null) {
         next(new Error('La conexión no está establecida'));
@@ -43,6 +43,7 @@ module.exports.users_getById = function (req, res, next) {
 };
 
 module.exports.users_create = function (req, res, next) {
+    console.log(req.body)
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -71,45 +72,44 @@ module.exports.users_create = function (req, res, next) {
             res.send(result)
         }
     });
-}
-module.exports.users_update_one =
-    function (req, res, next) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({
-                errors: errors.array()
-            });
-        }
-
-        if (db.get() === null) {
-            next(new Error('La conexión no está establecida'));
-            return;
-        }
-        const id = req.params.id;
-        const update = {
-            $set: {
-                nombre: req.body.nombre,
-                apellidos: req.body.apellidos,
-                edad: req.body.edad,
-                dni: req.body.dni,
-                cumple: req.body.cumple,
-                colorFavorito: req.body.colorFavorito,
-                sexo: req.body.sexo,
-                notas: req.body.notas
-            }
-        };
-
-        db.get().db('apidb').collection('users').updateOne({
-            _id: ObjectId(id)
-        }, update, function (err, result) {
-            if (err) {
-                next(new Error('Fallo en la conexión con la BD'));
-                return
-            } else {
-                res.send(result);
-            }
+};
+module.exports.users_update_one = function (req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            errors: errors.array()
         });
+    }
+
+    if (db.get() === null) {
+        next(new Error('La conexión no está establecida'));
+        return;
+    }
+    const id = req.params.id;
+    const update = {
+        $set: {
+            nombre: req.body.nombre,
+            apellidos: req.body.apellidos,
+            edad: req.body.edad,
+            dni: req.body.dni,
+            cumple: req.body.cumple,
+            colorFavorito: req.body.colorFavorito,
+            sexo: req.body.sexo,
+            notas: req.body.notas
+        }
     };
+
+    db.get().db('apidb').collection('users').updateOne({
+        _id: ObjectId(id)
+    }, update, function (err, result) {
+        if (err) {
+            next(new Error('Fallo en la conexión con la BD'));
+            return
+        } else {
+            res.send(result);
+        }
+    });
+};
 
 module.exports.users_delete_one = function (req, res, next) {
 

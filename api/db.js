@@ -15,7 +15,7 @@ module.exports.connect = function (url, callback) {
         if (err) {
             return callback(err);
         }
-        console.log('Conectando a BD');
+        console.log('Conectado a BD');
         db = result;
         callback()
     });

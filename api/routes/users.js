@@ -6,11 +6,18 @@ const {
 } = require('express-validator');
 
 const valid_user = [
-    check('nombre', 'Nombre no válido. Debe contener al menos 3 caracteres.')
-    .isLength({
+    check('nombre').isLength({
         min: 3
     })
-    .isAlpha(['es-ES']),
+    .custom((value, {
+        req
+    }) => {
+        if (isNaN(value)) {
+            return true;
+        } else {
+            throw new Error('Nombre no válido. Debe contener al menos 3 caracteres.')
+        }
+    }),
 
     check('apellidos').isLength({
         min: 3
